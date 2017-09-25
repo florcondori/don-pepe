@@ -1,0 +1,42 @@
+{
+	"productos": [
+		{
+			"id": 1,
+			"name": "Galletas",
+			"precio": 2.50,
+			"cant": 15,
+			"img": "galletas.jpg"
+		},
+		{
+			"id": 2,
+			"name": "Gaseosa Tec-Cola",
+			"precio": 3.50,
+			"cant": 5,
+			"img": "galletas.jpg"
+		},
+		{
+			"id": 3,
+			"name": "Chocolates",
+			"precio": 2.50,
+			"cant": 10,
+			"img": "galletas.jpg"
+		},
+		{
+			"id": 4,
+			"name": "Libros de Crucigramas",
+			"precio": 10.00,
+			"cant": 2,
+			"img": "galletas.jpg"
+		}
+	],
+	"users": [
+		{
+			"username": "usuario1",
+			"password": "pass1"
+		}
+	]
+}
+
+
+
+
