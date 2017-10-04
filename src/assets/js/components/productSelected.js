@@ -20,6 +20,17 @@ const ProductSelected = (update)=>{
 
 	const btnAddBag = $("<button>Comprar</button>");
 
+	const addBag = (value)=>{
+		state.bag.push(
+				{	name: state.productSelected.name,
+					id: state.productSelected.id,
+					img: state.productSelected.img,
+					precio: state.productSelected.precio,
+					cant: state.productSelected.cant,
+					valueSelected: value
+				});	
+	};
+
 	btnAddBag.on("click", (e)=>{
 		e.preventDefault();
 		let spanBadge = $(".bag").find('span');
@@ -32,16 +43,19 @@ const ProductSelected = (update)=>{
 		}
 
 		//Verificar si el producto seleccionado esta en el carrito de compras antes de guardarlo en el
+		//Si no hay ningun producto hacer push defrente
 		if(state.bag.length == 0){
-			state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+			addBag(valueSelected);
+
 		}else{
+
 			let inBag;
 			state.bag.forEach((obj, indx)=>{
 				if(obj.id == state.productSelected.id){
 					inBag = indx;
 				}
 			});
-
+			//Si el producto ya esta en el carrito, solo alteramos su valor seleccionado
 			if(inBag !== undefined ){
 				state.bag.forEach((obj, indx)=>{
 					if(obj.id == state.productSelected.id){
@@ -50,13 +64,12 @@ const ProductSelected = (update)=>{
 				});
 				
 			}else{
-				state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+				addBag(valueSelected);
 			}
 		}
-
+		//Despues de un segundo se muestra el carrito de compras
 		setTimeout(()=>{
 			state.page = MyBag;
-
 			update();
 
 		}, 1000);

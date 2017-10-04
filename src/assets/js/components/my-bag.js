@@ -8,7 +8,7 @@ const MyBag = ()=>{
 	const divContainer = $("<div class='conatiner-fluid'></div>");
 
 	$.each(state.bag, (i, obj)=>{
-		let div = $("<div class='row' id=${obj.id}></div>");
+		let div = $(`<div class='row' id='${obj.id}'></div>`);
 		let divImg = $("<div class='col-xs-3'></div>");
 		let img = $(`<img src='assets/img/${obj.img}' />`);
 		let divDescription = $("<div class='col-xs-9'></div>");
@@ -24,7 +24,7 @@ const MyBag = ()=>{
 			} 
 			select.append(option);
 		};
-
+		console.log($('select').val());
 		let purchase = parseInt(select.val()) * parseFloat(obj.precio);
 		let price = $(`<span class='sub-total'>${purchase}</span>`);	
 
@@ -39,11 +39,14 @@ const MyBag = ()=>{
 			$(e.currentTarget).closest(".row").remove();
 			const id = $(e.currentTarget).closest(".row").prop("id");
 			let indx;
+			console.log(id);
 			state.bag.forEach((obj, index)=>{
 				if(obj.id == id){
 					indx = index;
+					console.log("eliminando"+obj.name);
 				}
 			});
+			console.log("eliminando el indx"+ indx);
 			state.bag.splice(indx,1);
 		});
 

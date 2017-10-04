@@ -29,7 +29,6 @@ const Header = (update)=>{
 
 	aBag.on("click", (e)=>{
 		e.preventDefault();
-		console.log("ver bag");
 		state.page = MyBag;
 		update();
 	});

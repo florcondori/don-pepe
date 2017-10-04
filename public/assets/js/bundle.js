@@ -67,7 +67,6 @@ const Header = (update)=>{
 
 	aBag.on("click", (e)=>{
 		e.preventDefault();
-		console.log("ver bag");
 		state.page = MyBag;
 		update();
 	});
@@ -96,7 +95,7 @@ const MyBag = ()=>{
 	const divContainer = $("<div class='conatiner-fluid'></div>");
 
 	$.each(state.bag, (i, obj)=>{
-		let div = $("<div class='row' id=${obj.id}></div>");
+		let div = $(`<div class='row' id='${obj.id}'></div>`);
 		let divImg = $("<div class='col-xs-3'></div>");
 		let img = $(`<img src='assets/img/${obj.img}' />`);
 		let divDescription = $("<div class='col-xs-9'></div>");
@@ -112,7 +111,7 @@ const MyBag = ()=>{
 			} 
 			select.append(option);
 		};
-
+		console.log($('select').val());
 		let purchase = parseInt(select.val()) * parseFloat(obj.precio);
 		let price = $(`<span class='sub-total'>${purchase}</span>`);	
 
@@ -127,11 +126,14 @@ const MyBag = ()=>{
 			$(e.currentTarget).closest(".row").remove();
 			const id = $(e.currentTarget).closest(".row").prop("id");
 			let indx;
+			console.log(id);
 			state.bag.forEach((obj, index)=>{
 				if(obj.id == id){
 					indx = index;
+					console.log("eliminando"+obj.name);
 				}
 			});
+			console.log("eliminando el indx"+ indx);
 			state.bag.splice(indx,1);
 		});
 
@@ -208,6 +210,17 @@ const ProductSelected = (update)=>{
 
 	const btnAddBag = $("<button>Comprar</button>");
 
+	const addBag = (value)=>{
+		state.bag.push(
+				{	name: state.productSelected.name,
+					id: state.productSelected.id,
+					img: state.productSelected.img,
+					precio: state.productSelected.precio,
+					cant: state.productSelected.cant,
+					valueSelected: value
+				});	
+	};
+
 	btnAddBag.on("click", (e)=>{
 		e.preventDefault();
 		let spanBadge = $(".bag").find('span');
@@ -220,16 +233,19 @@ const ProductSelected = (update)=>{
 		}
 
 		//Verificar si el producto seleccionado esta en el carrito de compras antes de guardarlo en el
+		//Si no hay ningun producto hacer push defrente
 		if(state.bag.length == 0){
-			state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+			addBag(valueSelected);
+
 		}else{
+
 			let inBag;
 			state.bag.forEach((obj, indx)=>{
 				if(obj.id == state.productSelected.id){
 					inBag = indx;
 				}
 			});
-
+			//Si el producto ya esta en el carrito, solo alteramos su valor seleccionado
 			if(inBag !== undefined ){
 				state.bag.forEach((obj, indx)=>{
 					if(obj.id == state.productSelected.id){
@@ -238,13 +254,12 @@ const ProductSelected = (update)=>{
 				});
 				
 			}else{
-				state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+				addBag(valueSelected);
 			}
 		}
-
+		//Despues de un segundo se muestra el carrito de compras
 		setTimeout(()=>{
 			state.page = MyBag;
-
 			update();
 
 		}, 1000);
