@@ -31,11 +31,35 @@ const ProductSelected = (update)=>{
 			spanBadge.addClass('badge').text(valueSelected);
 		}
 
+		//Verificar si el producto seleccionado esta en el carrito de compras antes de guardarlo en el
+		if(state.bag.length == 0){
+			state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+		}else{
+			let inBag;
+			state.bag.forEach((obj, indx)=>{
+				if(obj.id == state.productSelected.id){
+					inBag = indx;
+				}
+			});
+
+			if(inBag !== undefined ){
+				state.bag.forEach((obj, indx)=>{
+					if(obj.id == state.productSelected.id){
+						obj.valueSelected = parseInt(obj.valueSelected) + parseInt(valueSelected);
+					}
+				});
+				
+			}else{
+				state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+			}
+		}
+
 		setTimeout(()=>{
 			state.page = MyBag;
-			state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+
 			update();
-		}, 2000);
+
+		}, 1000);
 		
 	});
 

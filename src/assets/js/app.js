@@ -10,7 +10,7 @@ const render = (root)=>{
 		wrapper.append(state.page(update));
 	}else{
 		wrapper.append(Welcome);
-		wrapper.append(Stock(_=>render(root)));
+		wrapper.append(Stock(update));
 	}
 
 	root.append(wrapper);

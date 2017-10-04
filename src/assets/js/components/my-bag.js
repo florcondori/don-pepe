@@ -4,7 +4,7 @@ const MyBag = ()=>{
 		$(".bag").hide();
 		$(".sign-in").hide();
 	});
-
+	console.log(state.bag);
 	const divContainer = $("<div class='conatiner-fluid'></div>");
 
 	$.each(state.bag, (i, obj)=>{
@@ -30,13 +30,21 @@ const MyBag = ()=>{
 
 		select.on("change", (e)=>{			
 			state.bag.filter( el => el.id == obj.id)[0].valueSelected = $(e.currentTarget).val();
-			console.log(state.bag);
+			
 			$(e.currentTarget).next().text(parseInt($(e.currentTarget).val())*parseFloat(obj.precio));
 		});
 
 		aRemove.on("click", (e)=>{
 			e.preventDefault();
 			$(e.currentTarget).closest(".row").remove();
+			const id = $(e.currentTarget).closest(".row").prop("id");
+			let indx;
+			state.bag.forEach((obj, index)=>{
+				if(obj.id == id){
+					indx = index;
+				}
+			});
+			state.bag.splice(indx,1);
 		});
 
 		divImg.append(img);
@@ -63,9 +71,10 @@ const MyBag = ()=>{
 	const col12C = $("<div class='col-xs-12'></div>");
 	const aCheckout = $("<a href='#'>Checkout <i class='glyphicon glyphicon-chevron-right'></i></a>");
 
-	let totalStateBag = state.bag.map( el => parseInt(el.valueSelected) * parseFloat(el.precio) ).reduce((sum, actual)=> sum + parseFloat(actual), 0);
+	let totalStateBag = state.bag.map( el => parseInt(el.valueSelected) * parseFloat(el.precio) )
+								 .reduce((sum, actual) => sum + parseFloat(actual), 0);
 	total.text(totalStateBag);
-
+	//actualizar el total cuando hay cambios en cada producto
 	$(()=>{
 		$("select").on("change", (e)=>{			
 			let precios = [];

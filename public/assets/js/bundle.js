@@ -11,7 +11,7 @@ const render = (root)=>{
 		wrapper.append(state.page(update));
 	}else{
 		wrapper.append(Welcome);
-		wrapper.append(Stock(_=>render(root)));
+		wrapper.append(Stock(update));
 	}
 
 	root.append(wrapper);
@@ -92,7 +92,7 @@ const MyBag = ()=>{
 		$(".bag").hide();
 		$(".sign-in").hide();
 	});
-
+	console.log(state.bag);
 	const divContainer = $("<div class='conatiner-fluid'></div>");
 
 	$.each(state.bag, (i, obj)=>{
@@ -118,13 +118,21 @@ const MyBag = ()=>{
 
 		select.on("change", (e)=>{			
 			state.bag.filter( el => el.id == obj.id)[0].valueSelected = $(e.currentTarget).val();
-			console.log(state.bag);
+			
 			$(e.currentTarget).next().text(parseInt($(e.currentTarget).val())*parseFloat(obj.precio));
 		});
 
 		aRemove.on("click", (e)=>{
 			e.preventDefault();
 			$(e.currentTarget).closest(".row").remove();
+			const id = $(e.currentTarget).closest(".row").prop("id");
+			let indx;
+			state.bag.forEach((obj, index)=>{
+				if(obj.id == id){
+					indx = index;
+				}
+			});
+			state.bag.splice(indx,1);
 		});
 
 		divImg.append(img);
@@ -151,9 +159,10 @@ const MyBag = ()=>{
 	const col12C = $("<div class='col-xs-12'></div>");
 	const aCheckout = $("<a href='#'>Checkout <i class='glyphicon glyphicon-chevron-right'></i></a>");
 
-	let totalStateBag = state.bag.map( el => parseInt(el.valueSelected) * parseFloat(el.precio) ).reduce((sum, actual)=> sum + parseFloat(actual), 0);
+	let totalStateBag = state.bag.map( el => parseInt(el.valueSelected) * parseFloat(el.precio) )
+								 .reduce((sum, actual) => sum + parseFloat(actual), 0);
 	total.text(totalStateBag);
-
+	//actualizar el total cuando hay cambios en cada producto
 	$(()=>{
 		$("select").on("change", (e)=>{			
 			let precios = [];
@@ -210,11 +219,35 @@ const ProductSelected = (update)=>{
 			spanBadge.addClass('badge').text(valueSelected);
 		}
 
+		//Verificar si el producto seleccionado esta en el carrito de compras antes de guardarlo en el
+		if(state.bag.length == 0){
+			state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+		}else{
+			let inBag;
+			state.bag.forEach((obj, indx)=>{
+				if(obj.id == state.productSelected.id){
+					inBag = indx;
+				}
+			});
+
+			if(inBag !== undefined ){
+				state.bag.forEach((obj, indx)=>{
+					if(obj.id == state.productSelected.id){
+						obj.valueSelected = parseInt(obj.valueSelected) + parseInt(valueSelected);
+					}
+				});
+				
+			}else{
+				state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+			}
+		}
+
 		setTimeout(()=>{
 			state.page = MyBag;
-			state.bag.push(Object.assign({}, state.productSelected,{valueSelected: valueSelected}));
+
 			update();
-		}, 2000);
+
+		}, 1000);
 		
 	});
 
